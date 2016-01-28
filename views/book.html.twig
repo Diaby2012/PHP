@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% block contents %}
+
+    {% for book in book %}
+        <div class="media jumbotron">
+            <div class="media-left media-middle">
+                {% if book.image %}
+                    <img src="{{ app.request.basepath }}/uploads/{{ book.image }}.jpg"/><br><br>
+                {% endif %}
+                <span>Nous avons {{ emprunts|length-1 }} Exemplaire(s)/ {{ NbreExemplaires[0]}}</span>
+                <ul>
+                    {% for ex in exemplaires %}
+                         {% set test = false %}
+                         <li>
+                             {% for em in emprunts %}
+                                 {% if ex.id == em.exemplaire  %}
+                                     <span class="red">exemplaire n°{{ ex.id }} non disponible</span>
+                                     {% set test = true %}
+                                 {% endif %}
+                             {% endfor %}
+                             {% if test != true %}
+                                 <span>exemplaire n°{{ ex.id }}</span>
+                                 {% if app.session.get('admin') %}
+                                    <a href="{{ app.request.basepath }}/emprunt/{{ ex.id }}">
+                                        <button class="btn btn-default" >Emprunter</button>
+                                    </a>
+                                 {% endif %}
+                             {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{ book.titre }} </h4>
+                <em>{{ book.auteur }}</em><br><br>
+                <span class="synopsis">{{ book.synopsis }} </span><br>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
